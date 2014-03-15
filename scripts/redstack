@@ -307,8 +307,12 @@ function cmd_set_datastore() {
     #rd_manage datastore_version_update <datastore_name> <version_name> <datastore_manager> <image_id> <packages> <active>
     rd_manage datastore_version_update "$DATASTORE_TYPE" "$DATASTORE_TYPE$VERSION" "$DATASTORE_TYPE" $IMAGEID "$PACKAGES" 1
     rd_manage datastore_version_update "$DATASTORE_TYPE" "$DATASTORE_TYPE"_inactive_version "manager1" $IMAGEID "" 0
+    rd_manage datastore_version_update "$DATASTORE_TYPE" "$DATASTORE_TYPE"_active_version "$DATASTORE_TYPE" "" "" 1
     rd_manage datastore_update "$DATASTORE_TYPE" "$DATASTORE_TYPE$VERSION"
     rd_manage datastore_update Test_Datastore_1 ""
+    rd_manage datastore_update Test_Datastore_2 "" 
+    rd_manage datastore_version_update Test_Datastore_2 Test_Datastore_2-1.0 Test_Datastore_2  "" "" 1
+    rd_manage datastore_update Test_Datastore_2 Test_Datastore_2-1.0
     cmd_stop
     iniset $TROVE_CONF_DIR/trove.conf DEFAULT default_datastore "$DATASTORE_TYPE"
     sleep 1.5
@@ -484,7 +488,15 @@ function init_fake_mode() {
             'c00000c0-00c0-0c00-00c0-000c000000cc', 'mysql-server-5.5', 1, 'mysql'); \
          INSERT INTO datastore_versions VALUES ('d00000d0-00d0-0d00-00d0-000d000000dd', \
             'a00000a0-00a0-0a00-00a0-000a000000aa', 'mysql_inactive_version', \
-            '', '', 0, 'manager1');"
+            '', '', 0, 'manager1');\
+         INSERT INTO datastore_versions VALUES ('f6d9b80e-4edd-4ab6-a0dd-9aa2fa2c71f4', \
+            'a00000a0-00a0-0a00-00a0-000a000000aa', 'mysql_active_version', \
+            '', '', 1, 'mysql');\
+         INSERT INTO datastores values ('150075b3-1d91-4d7c-8f5a-adf46742e20a', \
+            'Test_Datastore_2', '150075b3-1d91-4d7c-8f5a-adf46742e20a');\
+         INSERT INTO datastore_versions VALUES ('a56e8851-4d1a-47d2-af6f-80d2e5ed2c31', \
+            '150075b3-1d91-4d7c-8f5a-adf46742e20a', 'Test_Datastore_2-1.0', \
+            '', '', 1, 'Test_Datastore_2');"
 }
 
 function cmd_start() {
