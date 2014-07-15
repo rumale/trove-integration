@@ -171,6 +171,7 @@ def import_tests():
             instances.GROUP_START,
             "dbaas_quotas",
             "dbaas.api.security_groups",
+            "dbaas.api.replication",
             backups.GROUP,
             configurations.GROUP,
             datastores.GROUP,
