@@ -16,11 +16,16 @@ if [ -e "${TMP_HOOKS_DIR}/ssh-authorized-keys" ]; then
         chown ${GUEST_USERNAME}:${GUEST_USERNAME} ${SSH_DIR}
     fi
     sudo -Hiu ${GUEST_USERNAME} dd of=${SSH_DIR}/authorized_keys conv=notrunc if=${TMP_HOOKS_DIR}/ssh-authorized-keys
-    if [ ! -e "${SSH_DIR}/id_rsa" ]; then
-        sudo -Hiu ${GUEST_USERNAME} dd of=${SSH_DIR}/id_rsa if=${TMP_HOOKS_DIR}/id_rsa
-        # perms have to be right on this file for ssh to work
-        sudo -Hiu ${GUEST_USERNAME} chmod 600 ${SSH_DIR}/id_rsa
-        sudo -Hiu ${GUEST_USERNAME} dd of=${SSH_DIR}/id_rsa.pub if=${TMP_HOOKS_DIR}/id_rsa.pub
+
+    if [ -z "${GUEST_LOCAL_TROVE_DIR}" ] &&
+        [ -z "${GUEST_LOCAL_TROVE_CONF}" ]; then
+
+        if [ ! -e "${SSH_DIR}/id_rsa" ]; then
+            sudo -Hiu ${GUEST_USERNAME} dd of=${SSH_DIR}/id_rsa if=${TMP_HOOKS_DIR}/id_rsa
+            # perms have to be right on this file for ssh to work
+            sudo -Hiu ${GUEST_USERNAME} chmod 600 ${SSH_DIR}/id_rsa
+            sudo -Hiu ${GUEST_USERNAME} dd of=${SSH_DIR}/id_rsa.pub if=${TMP_HOOKS_DIR}/id_rsa.pub
+        fi
     fi
 else
     echo "SSH Keys were not staged by host"
